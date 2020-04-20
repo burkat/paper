@@ -1,0 +1,3637 @@
+{
+  "functions": [
+    {
+      "name": "cloudRunCommand",
+      "module": "functions"
+    }
+  ],
+  "ins": [
+    0,
+    3,
+    4
+  ],
+  "outs": [
+    1,
+    2,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149,
+    150,
+    151,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    164,
+    165,
+    166,
+    167,
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201,
+    202
+  ],
+  "processes": [
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "1",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        0,
+        3
+      ],
+      "outs": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "2",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        5,
+        6
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "3",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        7,
+        8
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "4",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        9,
+        10
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "5",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        11,
+        12
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "6",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        13,
+        14
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "7",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        15,
+        16
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "8",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        17,
+        18
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "9",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        19,
+        20
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "10",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        21,
+        22
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "11",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        23,
+        24
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "12",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        25,
+        26
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "13",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        27,
+        28
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "14",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        29,
+        30
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "15",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        31,
+        32
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "16",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        33,
+        34
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "17",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        35,
+        36
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "18",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        37,
+        38
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "19",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        39,
+        40
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "20",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        41,
+        42
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "21",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        43,
+        44
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "22",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        45,
+        46
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "23",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        47,
+        48
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "24",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        49,
+        50
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "25",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        51,
+        52
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "26",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        53,
+        54
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "27",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        55,
+        56
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "28",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        57,
+        58
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "29",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        59,
+        60
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "30",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        61,
+        62
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "31",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        63,
+        64
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "32",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        65,
+        66
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "33",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        67,
+        68
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "34",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        69,
+        70
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "35",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        71,
+        72
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "36",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        73,
+        74
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "37",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        75,
+        76
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "38",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        77,
+        78
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "39",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        79,
+        80
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "40",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        81,
+        82
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "41",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        83,
+        84
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "42",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        85,
+        86
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "43",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        87,
+        88
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "44",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        89,
+        90
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "45",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        91,
+        92
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "46",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        93,
+        94
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "47",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        95,
+        96
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "48",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        97,
+        98
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "49",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        99,
+        100
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "50",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        101,
+        102
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "51",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        103,
+        104
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "52",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        105,
+        106
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "53",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        107,
+        108
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "54",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        109,
+        110
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "55",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        111,
+        112
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "56",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        113,
+        114
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "57",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        115,
+        116
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "58",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        117,
+        118
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "59",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        119,
+        120
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "60",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        121,
+        122
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "61",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        123,
+        124
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "62",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        125,
+        126
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "63",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        127,
+        128
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "64",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        129,
+        130
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "65",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        131,
+        132
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "66",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        133,
+        134
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "67",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        135,
+        136
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "68",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        137,
+        138
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "69",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        139,
+        140
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "70",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        141,
+        142
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "71",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        143,
+        144
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "72",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        145,
+        146
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "73",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        147,
+        148
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "74",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        149,
+        150
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "75",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        151,
+        152
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "76",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        153,
+        154
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "77",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        155,
+        156
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "78",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        157,
+        158
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "79",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        159,
+        160
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "80",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        161,
+        162
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "81",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        163,
+        164
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "82",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        165,
+        166
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "83",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        167,
+        168
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "84",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        169,
+        170
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "85",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        171,
+        172
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "86",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        173,
+        174
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "87",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        175,
+        176
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "88",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        177,
+        178
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "89",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        179,
+        180
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "90",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        181,
+        182
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "91",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        183,
+        184
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "92",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        185,
+        186
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "93",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        187,
+        188
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "94",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        189,
+        190
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "95",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        191,
+        192
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "96",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        193,
+        194
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "97",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        195,
+        196
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "98",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        197,
+        198
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "99",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        199,
+        200
+      ]
+    },
+    {
+      "name": "kinc-wrapper",
+      "function": "cloudRunCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "kinc-wrapper",
+          "args": [
+            "Yeast-GEM.tar.gz",
+            "Yeast-GEM.txt",
+            "100",
+            "100",
+            "32",
+            "7051"
+          ]
+        }
+      },
+      "ins": [
+        4,
+        3
+      ],
+      "outs": [
+        201,
+        202
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "kinc",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "clusters-sc1.tar.gz"
+    },
+    {
+      "name": "kinc.out.1"
+    },
+    {
+      "name": "Yeast-GEM.tar.gz",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "kinc",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "clusters-sc2.tar.gz"
+    },
+    {
+      "name": "kinc.out.2"
+    },
+    {
+      "name": "clusters-sc3.tar.gz"
+    },
+    {
+      "name": "kinc.out.3"
+    },
+    {
+      "name": "clusters-sc4.tar.gz"
+    },
+    {
+      "name": "kinc.out.4"
+    },
+    {
+      "name": "kinc.out.5"
+    },
+    {
+      "name": "clusters-sc5.tar.gz"
+    },
+    {
+      "name": "clusters-sc6.tar.gz"
+    },
+    {
+      "name": "kinc.out.6"
+    },
+    {
+      "name": "kinc.out.7"
+    },
+    {
+      "name": "clusters-sc7.tar.gz"
+    },
+    {
+      "name": "kinc.out.8"
+    },
+    {
+      "name": "clusters-sc8.tar.gz"
+    },
+    {
+      "name": "clusters-sc9.tar.gz"
+    },
+    {
+      "name": "kinc.out.9"
+    },
+    {
+      "name": "kinc.out.10"
+    },
+    {
+      "name": "clusters-sc10.tar.gz"
+    },
+    {
+      "name": "clusters-sc11.tar.gz"
+    },
+    {
+      "name": "kinc.out.11"
+    },
+    {
+      "name": "clusters-sc12.tar.gz"
+    },
+    {
+      "name": "kinc.out.12"
+    },
+    {
+      "name": "kinc.out.13"
+    },
+    {
+      "name": "clusters-sc13.tar.gz"
+    },
+    {
+      "name": "kinc.out.14"
+    },
+    {
+      "name": "clusters-sc14.tar.gz"
+    },
+    {
+      "name": "kinc.out.15"
+    },
+    {
+      "name": "clusters-sc15.tar.gz"
+    },
+    {
+      "name": "clusters-sc16.tar.gz"
+    },
+    {
+      "name": "kinc.out.16"
+    },
+    {
+      "name": "kinc.out.17"
+    },
+    {
+      "name": "clusters-sc17.tar.gz"
+    },
+    {
+      "name": "kinc.out.18"
+    },
+    {
+      "name": "clusters-sc18.tar.gz"
+    },
+    {
+      "name": "clusters-sc19.tar.gz"
+    },
+    {
+      "name": "kinc.out.19"
+    },
+    {
+      "name": "clusters-sc20.tar.gz"
+    },
+    {
+      "name": "kinc.out.20"
+    },
+    {
+      "name": "kinc.out.21"
+    },
+    {
+      "name": "clusters-sc21.tar.gz"
+    },
+    {
+      "name": "clusters-sc22.tar.gz"
+    },
+    {
+      "name": "kinc.out.22"
+    },
+    {
+      "name": "clusters-sc23.tar.gz"
+    },
+    {
+      "name": "kinc.out.23"
+    },
+    {
+      "name": "kinc.out.24"
+    },
+    {
+      "name": "clusters-sc24.tar.gz"
+    },
+    {
+      "name": "kinc.out.25"
+    },
+    {
+      "name": "clusters-sc25.tar.gz"
+    },
+    {
+      "name": "kinc.out.26"
+    },
+    {
+      "name": "clusters-sc26.tar.gz"
+    },
+    {
+      "name": "clusters-sc27.tar.gz"
+    },
+    {
+      "name": "kinc.out.27"
+    },
+    {
+      "name": "kinc.out.28"
+    },
+    {
+      "name": "clusters-sc28.tar.gz"
+    },
+    {
+      "name": "kinc.out.29"
+    },
+    {
+      "name": "clusters-sc29.tar.gz"
+    },
+    {
+      "name": "clusters-sc30.tar.gz"
+    },
+    {
+      "name": "kinc.out.30"
+    },
+    {
+      "name": "clusters-sc31.tar.gz"
+    },
+    {
+      "name": "kinc.out.31"
+    },
+    {
+      "name": "kinc.out.32"
+    },
+    {
+      "name": "clusters-sc32.tar.gz"
+    },
+    {
+      "name": "kinc.out.33"
+    },
+    {
+      "name": "clusters-sc33.tar.gz"
+    },
+    {
+      "name": "clusters-sc34.tar.gz"
+    },
+    {
+      "name": "kinc.out.34"
+    },
+    {
+      "name": "kinc.out.35"
+    },
+    {
+      "name": "clusters-sc35.tar.gz"
+    },
+    {
+      "name": "kinc.out.36"
+    },
+    {
+      "name": "clusters-sc36.tar.gz"
+    },
+    {
+      "name": "clusters-sc37.tar.gz"
+    },
+    {
+      "name": "kinc.out.37"
+    },
+    {
+      "name": "clusters-sc38.tar.gz"
+    },
+    {
+      "name": "kinc.out.38"
+    },
+    {
+      "name": "clusters-sc39.tar.gz"
+    },
+    {
+      "name": "kinc.out.39"
+    },
+    {
+      "name": "clusters-sc40.tar.gz"
+    },
+    {
+      "name": "kinc.out.40"
+    },
+    {
+      "name": "clusters-sc41.tar.gz"
+    },
+    {
+      "name": "kinc.out.41"
+    },
+    {
+      "name": "kinc.out.42"
+    },
+    {
+      "name": "clusters-sc42.tar.gz"
+    },
+    {
+      "name": "kinc.out.43"
+    },
+    {
+      "name": "clusters-sc43.tar.gz"
+    },
+    {
+      "name": "kinc.out.44"
+    },
+    {
+      "name": "clusters-sc44.tar.gz"
+    },
+    {
+      "name": "clusters-sc45.tar.gz"
+    },
+    {
+      "name": "kinc.out.45"
+    },
+    {
+      "name": "clusters-sc46.tar.gz"
+    },
+    {
+      "name": "kinc.out.46"
+    },
+    {
+      "name": "kinc.out.47"
+    },
+    {
+      "name": "clusters-sc47.tar.gz"
+    },
+    {
+      "name": "clusters-sc48.tar.gz"
+    },
+    {
+      "name": "kinc.out.48"
+    },
+    {
+      "name": "clusters-sc49.tar.gz"
+    },
+    {
+      "name": "kinc.out.49"
+    },
+    {
+      "name": "kinc.out.50"
+    },
+    {
+      "name": "clusters-sc50.tar.gz"
+    },
+    {
+      "name": "kinc.out.51"
+    },
+    {
+      "name": "clusters-sc51.tar.gz"
+    },
+    {
+      "name": "clusters-sc52.tar.gz"
+    },
+    {
+      "name": "kinc.out.52"
+    },
+    {
+      "name": "kinc.out.53"
+    },
+    {
+      "name": "clusters-sc53.tar.gz"
+    },
+    {
+      "name": "kinc.out.54"
+    },
+    {
+      "name": "clusters-sc54.tar.gz"
+    },
+    {
+      "name": "clusters-sc55.tar.gz"
+    },
+    {
+      "name": "kinc.out.55"
+    },
+    {
+      "name": "clusters-sc56.tar.gz"
+    },
+    {
+      "name": "kinc.out.56"
+    },
+    {
+      "name": "kinc.out.57"
+    },
+    {
+      "name": "clusters-sc57.tar.gz"
+    },
+    {
+      "name": "kinc.out.58"
+    },
+    {
+      "name": "clusters-sc58.tar.gz"
+    },
+    {
+      "name": "kinc.out.59"
+    },
+    {
+      "name": "clusters-sc59.tar.gz"
+    },
+    {
+      "name": "kinc.out.60"
+    },
+    {
+      "name": "clusters-sc60.tar.gz"
+    },
+    {
+      "name": "kinc.out.61"
+    },
+    {
+      "name": "clusters-sc61.tar.gz"
+    },
+    {
+      "name": "kinc.out.62"
+    },
+    {
+      "name": "clusters-sc62.tar.gz"
+    },
+    {
+      "name": "clusters-sc63.tar.gz"
+    },
+    {
+      "name": "kinc.out.63"
+    },
+    {
+      "name": "clusters-sc64.tar.gz"
+    },
+    {
+      "name": "kinc.out.64"
+    },
+    {
+      "name": "kinc.out.65"
+    },
+    {
+      "name": "clusters-sc65.tar.gz"
+    },
+    {
+      "name": "kinc.out.66"
+    },
+    {
+      "name": "clusters-sc66.tar.gz"
+    },
+    {
+      "name": "clusters-sc67.tar.gz"
+    },
+    {
+      "name": "kinc.out.67"
+    },
+    {
+      "name": "clusters-sc68.tar.gz"
+    },
+    {
+      "name": "kinc.out.68"
+    },
+    {
+      "name": "kinc.out.69"
+    },
+    {
+      "name": "clusters-sc69.tar.gz"
+    },
+    {
+      "name": "clusters-sc70.tar.gz"
+    },
+    {
+      "name": "kinc.out.70"
+    },
+    {
+      "name": "kinc.out.71"
+    },
+    {
+      "name": "clusters-sc71.tar.gz"
+    },
+    {
+      "name": "kinc.out.72"
+    },
+    {
+      "name": "clusters-sc72.tar.gz"
+    },
+    {
+      "name": "kinc.out.73"
+    },
+    {
+      "name": "clusters-sc73.tar.gz"
+    },
+    {
+      "name": "clusters-sc74.tar.gz"
+    },
+    {
+      "name": "kinc.out.74"
+    },
+    {
+      "name": "clusters-sc75.tar.gz"
+    },
+    {
+      "name": "kinc.out.75"
+    },
+    {
+      "name": "kinc.out.76"
+    },
+    {
+      "name": "clusters-sc76.tar.gz"
+    },
+    {
+      "name": "kinc.out.77"
+    },
+    {
+      "name": "clusters-sc77.tar.gz"
+    },
+    {
+      "name": "clusters-sc78.tar.gz"
+    },
+    {
+      "name": "kinc.out.78"
+    },
+    {
+      "name": "kinc.out.79"
+    },
+    {
+      "name": "clusters-sc79.tar.gz"
+    },
+    {
+      "name": "clusters-sc80.tar.gz"
+    },
+    {
+      "name": "kinc.out.80"
+    },
+    {
+      "name": "clusters-sc81.tar.gz"
+    },
+    {
+      "name": "kinc.out.81"
+    },
+    {
+      "name": "clusters-sc82.tar.gz"
+    },
+    {
+      "name": "kinc.out.82"
+    },
+    {
+      "name": "kinc.out.83"
+    },
+    {
+      "name": "clusters-sc83.tar.gz"
+    },
+    {
+      "name": "kinc.out.84"
+    },
+    {
+      "name": "clusters-sc84.tar.gz"
+    },
+    {
+      "name": "clusters-sc85.tar.gz"
+    },
+    {
+      "name": "kinc.out.85"
+    },
+    {
+      "name": "kinc.out.86"
+    },
+    {
+      "name": "clusters-sc86.tar.gz"
+    },
+    {
+      "name": "kinc.out.87"
+    },
+    {
+      "name": "clusters-sc87.tar.gz"
+    },
+    {
+      "name": "clusters-sc88.tar.gz"
+    },
+    {
+      "name": "kinc.out.88"
+    },
+    {
+      "name": "clusters-sc89.tar.gz"
+    },
+    {
+      "name": "kinc.out.89"
+    },
+    {
+      "name": "kinc.out.90"
+    },
+    {
+      "name": "clusters-sc90.tar.gz"
+    },
+    {
+      "name": "clusters-sc91.tar.gz"
+    },
+    {
+      "name": "kinc.out.91"
+    },
+    {
+      "name": "clusters-sc92.tar.gz"
+    },
+    {
+      "name": "kinc.out.92"
+    },
+    {
+      "name": "kinc.out.93"
+    },
+    {
+      "name": "clusters-sc93.tar.gz"
+    },
+    {
+      "name": "kinc.out.94"
+    },
+    {
+      "name": "clusters-sc94.tar.gz"
+    },
+    {
+      "name": "kinc.out.95"
+    },
+    {
+      "name": "clusters-sc95.tar.gz"
+    },
+    {
+      "name": "clusters-sc96.tar.gz"
+    },
+    {
+      "name": "kinc.out.96"
+    },
+    {
+      "name": "kinc.out.97"
+    },
+    {
+      "name": "clusters-sc97.tar.gz"
+    },
+    {
+      "name": "kinc.out.98"
+    },
+    {
+      "name": "clusters-sc98.tar.gz"
+    },
+    {
+      "name": "clusters-sc99.tar.gz"
+    },
+    {
+      "name": "kinc.out.99"
+    },
+    {
+      "name": "clusters-sc100.tar.gz"
+    },
+    {
+      "name": "kinc.out.100"
+    }
+  ]
+}

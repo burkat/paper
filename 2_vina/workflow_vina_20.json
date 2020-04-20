@@ -1,0 +1,2380 @@
+{
+  "processes": [
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000179_1.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000179_1"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000179_1"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000179_1.pdbqt",
+        "config_hsg_1_ZINC00000179_1"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_1.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000179_1.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000179_1.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_1_ligand_1.pdbqt",
+        "hsg_1_ZINC00000179_1_ligand_2.pdbqt",
+        "hsg_1_ZINC00000179_1_ligand_3.pdbqt",
+        "hsg_1_ZINC00000179_1_ligand_4.pdbqt",
+        "hsg_1_ZINC00000179_1_ligand_5.pdbqt",
+        "hsg_1_ZINC00000179_1_ligand_6.pdbqt",
+        "hsg_1_ZINC00000179_1_ligand_7.pdbqt",
+        "hsg_1_ZINC00000179_1_ligand_8.pdbqt",
+        "hsg_1_ZINC00000179_1_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000179_2.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000179_2"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000179_2"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000179_2.pdbqt",
+        "config_hsg_1_ZINC00000179_2"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_2.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000179_2.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000179_2.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_2_ligand_1.pdbqt",
+        "hsg_1_ZINC00000179_2_ligand_2.pdbqt",
+        "hsg_1_ZINC00000179_2_ligand_3.pdbqt",
+        "hsg_1_ZINC00000179_2_ligand_4.pdbqt",
+        "hsg_1_ZINC00000179_2_ligand_5.pdbqt",
+        "hsg_1_ZINC00000179_2_ligand_6.pdbqt",
+        "hsg_1_ZINC00000179_2_ligand_7.pdbqt",
+        "hsg_1_ZINC00000179_2_ligand_8.pdbqt",
+        "hsg_1_ZINC00000179_2_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000179_3.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000179_3"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000179_3"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000179_3.pdbqt",
+        "config_hsg_1_ZINC00000179_3"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_3.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000179_3.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000179_3.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_3_ligand_1.pdbqt",
+        "hsg_1_ZINC00000179_3_ligand_2.pdbqt",
+        "hsg_1_ZINC00000179_3_ligand_3.pdbqt",
+        "hsg_1_ZINC00000179_3_ligand_4.pdbqt",
+        "hsg_1_ZINC00000179_3_ligand_5.pdbqt",
+        "hsg_1_ZINC00000179_3_ligand_6.pdbqt",
+        "hsg_1_ZINC00000179_3_ligand_7.pdbqt",
+        "hsg_1_ZINC00000179_3_ligand_8.pdbqt",
+        "hsg_1_ZINC00000179_3_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000179_4.pdbqt",
+            "20"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000179_4"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000179_4"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000179_4.pdbqt",
+        "config_hsg_1_ZINC00000179_4"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_4.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000179_4.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000179_4.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_4_ligand_1.pdbqt",
+        "hsg_1_ZINC00000179_4_ligand_2.pdbqt",
+        "hsg_1_ZINC00000179_4_ligand_3.pdbqt",
+        "hsg_1_ZINC00000179_4_ligand_4.pdbqt",
+        "hsg_1_ZINC00000179_4_ligand_5.pdbqt",
+        "hsg_1_ZINC00000179_4_ligand_6.pdbqt",
+        "hsg_1_ZINC00000179_4_ligand_7.pdbqt",
+        "hsg_1_ZINC00000179_4_ligand_8.pdbqt",
+        "hsg_1_ZINC00000179_4_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000179_5.pdbqt",
+            "20"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000179_5"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000179_5"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000179_5.pdbqt",
+        "config_hsg_1_ZINC00000179_5"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_5.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000179_5.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000179_5.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000179_5_ligand_1.pdbqt",
+        "hsg_1_ZINC00000179_5_ligand_2.pdbqt",
+        "hsg_1_ZINC00000179_5_ligand_3.pdbqt",
+        "hsg_1_ZINC00000179_5_ligand_4.pdbqt",
+        "hsg_1_ZINC00000179_5_ligand_5.pdbqt",
+        "hsg_1_ZINC00000179_5_ligand_6.pdbqt",
+        "hsg_1_ZINC00000179_5_ligand_7.pdbqt",
+        "hsg_1_ZINC00000179_5_ligand_8.pdbqt",
+        "hsg_1_ZINC00000179_5_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000345_1.pdbqt",
+            "50"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000345_1"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000345_1"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000345_1.pdbqt",
+        "config_hsg_1_ZINC00000345_1"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_1.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000345_1.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000345_1.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_1_ligand_1.pdbqt",
+        "hsg_1_ZINC00000345_1_ligand_2.pdbqt",
+        "hsg_1_ZINC00000345_1_ligand_3.pdbqt",
+        "hsg_1_ZINC00000345_1_ligand_4.pdbqt",
+        "hsg_1_ZINC00000345_1_ligand_5.pdbqt",
+        "hsg_1_ZINC00000345_1_ligand_6.pdbqt",
+        "hsg_1_ZINC00000345_1_ligand_7.pdbqt",
+        "hsg_1_ZINC00000345_1_ligand_8.pdbqt",
+        "hsg_1_ZINC00000345_1_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000345_2.pdbqt",
+            "50"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000345_2"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000345_2"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000345_2.pdbqt",
+        "config_hsg_1_ZINC00000345_2"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_2.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000345_2.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000345_2.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_2_ligand_1.pdbqt",
+        "hsg_1_ZINC00000345_2_ligand_2.pdbqt",
+        "hsg_1_ZINC00000345_2_ligand_3.pdbqt",
+        "hsg_1_ZINC00000345_2_ligand_4.pdbqt",
+        "hsg_1_ZINC00000345_2_ligand_5.pdbqt",
+        "hsg_1_ZINC00000345_2_ligand_6.pdbqt",
+        "hsg_1_ZINC00000345_2_ligand_7.pdbqt",
+        "hsg_1_ZINC00000345_2_ligand_8.pdbqt",
+        "hsg_1_ZINC00000345_2_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000345_3.pdbqt",
+            "50"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000345_3"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000345_3"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000345_3.pdbqt",
+        "config_hsg_1_ZINC00000345_3"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_3.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000345_3.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000345_3.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_3_ligand_1.pdbqt",
+        "hsg_1_ZINC00000345_3_ligand_2.pdbqt",
+        "hsg_1_ZINC00000345_3_ligand_3.pdbqt",
+        "hsg_1_ZINC00000345_3_ligand_4.pdbqt",
+        "hsg_1_ZINC00000345_3_ligand_5.pdbqt",
+        "hsg_1_ZINC00000345_3_ligand_6.pdbqt",
+        "hsg_1_ZINC00000345_3_ligand_7.pdbqt",
+        "hsg_1_ZINC00000345_3_ligand_8.pdbqt",
+        "hsg_1_ZINC00000345_3_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000345_4.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000345_4"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000345_4"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000345_4.pdbqt",
+        "config_hsg_1_ZINC00000345_4"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_4.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000345_4.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000345_4.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_4_ligand_1.pdbqt",
+        "hsg_1_ZINC00000345_4_ligand_2.pdbqt",
+        "hsg_1_ZINC00000345_4_ligand_3.pdbqt",
+        "hsg_1_ZINC00000345_4_ligand_4.pdbqt",
+        "hsg_1_ZINC00000345_4_ligand_5.pdbqt",
+        "hsg_1_ZINC00000345_4_ligand_6.pdbqt",
+        "hsg_1_ZINC00000345_4_ligand_7.pdbqt",
+        "hsg_1_ZINC00000345_4_ligand_8.pdbqt",
+        "hsg_1_ZINC00000345_4_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_1.pdbqt",
+            "ZINC00000345_5.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_1_ZINC00000345_5"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_1_ZINC00000345_5"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1.pdbqt",
+        "ZINC00000345_5.pdbqt",
+        "config_hsg_1_ZINC00000345_5"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_5.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_1_ZINC00000345_5.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_1_ZINC00000345_5.pdbqt"
+      ],
+      "outs": [
+        "hsg_1_ZINC00000345_5_ligand_1.pdbqt",
+        "hsg_1_ZINC00000345_5_ligand_2.pdbqt",
+        "hsg_1_ZINC00000345_5_ligand_3.pdbqt",
+        "hsg_1_ZINC00000345_5_ligand_4.pdbqt",
+        "hsg_1_ZINC00000345_5_ligand_5.pdbqt",
+        "hsg_1_ZINC00000345_5_ligand_6.pdbqt",
+        "hsg_1_ZINC00000345_5_ligand_7.pdbqt",
+        "hsg_1_ZINC00000345_5_ligand_8.pdbqt",
+        "hsg_1_ZINC00000345_5_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000179_1.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000179_1"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000179_1"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000179_1.pdbqt",
+        "config_hsg_2_ZINC00000179_1"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_1.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000179_1.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000179_1.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_1_ligand_1.pdbqt",
+        "hsg_2_ZINC00000179_1_ligand_2.pdbqt",
+        "hsg_2_ZINC00000179_1_ligand_3.pdbqt",
+        "hsg_2_ZINC00000179_1_ligand_4.pdbqt",
+        "hsg_2_ZINC00000179_1_ligand_5.pdbqt",
+        "hsg_2_ZINC00000179_1_ligand_6.pdbqt",
+        "hsg_2_ZINC00000179_1_ligand_7.pdbqt",
+        "hsg_2_ZINC00000179_1_ligand_8.pdbqt",
+        "hsg_2_ZINC00000179_1_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000179_2.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000179_2"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000179_2"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000179_2.pdbqt",
+        "config_hsg_2_ZINC00000179_2"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_2.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000179_2.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000179_2.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_2_ligand_1.pdbqt",
+        "hsg_2_ZINC00000179_2_ligand_2.pdbqt",
+        "hsg_2_ZINC00000179_2_ligand_3.pdbqt",
+        "hsg_2_ZINC00000179_2_ligand_4.pdbqt",
+        "hsg_2_ZINC00000179_2_ligand_5.pdbqt",
+        "hsg_2_ZINC00000179_2_ligand_6.pdbqt",
+        "hsg_2_ZINC00000179_2_ligand_7.pdbqt",
+        "hsg_2_ZINC00000179_2_ligand_8.pdbqt",
+        "hsg_2_ZINC00000179_2_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000179_3.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000179_3"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000179_3"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000179_3.pdbqt",
+        "config_hsg_2_ZINC00000179_3"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_3.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000179_3.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000179_3.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_3_ligand_1.pdbqt",
+        "hsg_2_ZINC00000179_3_ligand_2.pdbqt",
+        "hsg_2_ZINC00000179_3_ligand_3.pdbqt",
+        "hsg_2_ZINC00000179_3_ligand_4.pdbqt",
+        "hsg_2_ZINC00000179_3_ligand_5.pdbqt",
+        "hsg_2_ZINC00000179_3_ligand_6.pdbqt",
+        "hsg_2_ZINC00000179_3_ligand_7.pdbqt",
+        "hsg_2_ZINC00000179_3_ligand_8.pdbqt",
+        "hsg_2_ZINC00000179_3_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000179_4.pdbqt",
+            "20"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000179_4"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000179_4"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000179_4.pdbqt",
+        "config_hsg_2_ZINC00000179_4"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_4.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000179_4.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000179_4.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_4_ligand_1.pdbqt",
+        "hsg_2_ZINC00000179_4_ligand_2.pdbqt",
+        "hsg_2_ZINC00000179_4_ligand_3.pdbqt",
+        "hsg_2_ZINC00000179_4_ligand_4.pdbqt",
+        "hsg_2_ZINC00000179_4_ligand_5.pdbqt",
+        "hsg_2_ZINC00000179_4_ligand_6.pdbqt",
+        "hsg_2_ZINC00000179_4_ligand_7.pdbqt",
+        "hsg_2_ZINC00000179_4_ligand_8.pdbqt",
+        "hsg_2_ZINC00000179_4_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000179_5.pdbqt",
+            "20"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000179_5"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000179_5"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000179_5.pdbqt",
+        "config_hsg_2_ZINC00000179_5"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_5.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000179_5.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000179_5.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000179_5_ligand_1.pdbqt",
+        "hsg_2_ZINC00000179_5_ligand_2.pdbqt",
+        "hsg_2_ZINC00000179_5_ligand_3.pdbqt",
+        "hsg_2_ZINC00000179_5_ligand_4.pdbqt",
+        "hsg_2_ZINC00000179_5_ligand_5.pdbqt",
+        "hsg_2_ZINC00000179_5_ligand_6.pdbqt",
+        "hsg_2_ZINC00000179_5_ligand_7.pdbqt",
+        "hsg_2_ZINC00000179_5_ligand_8.pdbqt",
+        "hsg_2_ZINC00000179_5_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000345_1.pdbqt",
+            "50"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000345_1"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000345_1"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000345_1.pdbqt",
+        "config_hsg_2_ZINC00000345_1"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_1.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000345_1.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000345_1.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_1_ligand_1.pdbqt",
+        "hsg_2_ZINC00000345_1_ligand_2.pdbqt",
+        "hsg_2_ZINC00000345_1_ligand_3.pdbqt",
+        "hsg_2_ZINC00000345_1_ligand_4.pdbqt",
+        "hsg_2_ZINC00000345_1_ligand_5.pdbqt",
+        "hsg_2_ZINC00000345_1_ligand_6.pdbqt",
+        "hsg_2_ZINC00000345_1_ligand_7.pdbqt",
+        "hsg_2_ZINC00000345_1_ligand_8.pdbqt",
+        "hsg_2_ZINC00000345_1_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000345_2.pdbqt",
+            "50"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000345_2"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000345_2"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000345_2.pdbqt",
+        "config_hsg_2_ZINC00000345_2"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_2.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000345_2.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000345_2.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_2_ligand_1.pdbqt",
+        "hsg_2_ZINC00000345_2_ligand_2.pdbqt",
+        "hsg_2_ZINC00000345_2_ligand_3.pdbqt",
+        "hsg_2_ZINC00000345_2_ligand_4.pdbqt",
+        "hsg_2_ZINC00000345_2_ligand_5.pdbqt",
+        "hsg_2_ZINC00000345_2_ligand_6.pdbqt",
+        "hsg_2_ZINC00000345_2_ligand_7.pdbqt",
+        "hsg_2_ZINC00000345_2_ligand_8.pdbqt",
+        "hsg_2_ZINC00000345_2_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000345_3.pdbqt",
+            "50"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000345_3"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000345_3"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000345_3.pdbqt",
+        "config_hsg_2_ZINC00000345_3"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_3.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000345_3.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000345_3.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_3_ligand_1.pdbqt",
+        "hsg_2_ZINC00000345_3_ligand_2.pdbqt",
+        "hsg_2_ZINC00000345_3_ligand_3.pdbqt",
+        "hsg_2_ZINC00000345_3_ligand_4.pdbqt",
+        "hsg_2_ZINC00000345_3_ligand_5.pdbqt",
+        "hsg_2_ZINC00000345_3_ligand_6.pdbqt",
+        "hsg_2_ZINC00000345_3_ligand_7.pdbqt",
+        "hsg_2_ZINC00000345_3_ligand_8.pdbqt",
+        "hsg_2_ZINC00000345_3_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000345_4.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000345_4"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000345_4"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000345_4.pdbqt",
+        "config_hsg_2_ZINC00000345_4"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_4.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000345_4.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000345_4.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_4_ligand_1.pdbqt",
+        "hsg_2_ZINC00000345_4_ligand_2.pdbqt",
+        "hsg_2_ZINC00000345_4_ligand_3.pdbqt",
+        "hsg_2_ZINC00000345_4_ligand_4.pdbqt",
+        "hsg_2_ZINC00000345_4_ligand_5.pdbqt",
+        "hsg_2_ZINC00000345_4_ligand_6.pdbqt",
+        "hsg_2_ZINC00000345_4_ligand_7.pdbqt",
+        "hsg_2_ZINC00000345_4_ligand_8.pdbqt",
+        "hsg_2_ZINC00000345_4_ligand_9.pdbqt"
+      ]
+    },
+    {
+      "name": "wrapper",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "wrapper.js",
+          "args": [
+            "hsg_2.pdbqt",
+            "ZINC00000345_5.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "parameters.txt"
+      ],
+      "outs": [
+        "config_hsg_2_ZINC00000345_5"
+      ]
+    },
+    {
+      "name": "vina",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina",
+          "args": [
+            "--config",
+            "config_hsg_2_ZINC00000345_5"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2.pdbqt",
+        "ZINC00000345_5.pdbqt",
+        "config_hsg_2_ZINC00000345_5"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_5.pdbqt"
+      ]
+    },
+    {
+      "name": "split",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "vina_split",
+          "args": [
+            "--input",
+            "hsg_2_ZINC00000345_5.pdbqt"
+          ]
+        }
+      },
+      "ins": [
+        "hsg_2_ZINC00000345_5.pdbqt"
+      ],
+      "outs": [
+        "hsg_2_ZINC00000345_5_ligand_1.pdbqt",
+        "hsg_2_ZINC00000345_5_ligand_2.pdbqt",
+        "hsg_2_ZINC00000345_5_ligand_3.pdbqt",
+        "hsg_2_ZINC00000345_5_ligand_4.pdbqt",
+        "hsg_2_ZINC00000345_5_ligand_5.pdbqt",
+        "hsg_2_ZINC00000345_5_ligand_6.pdbqt",
+        "hsg_2_ZINC00000345_5_ligand_7.pdbqt",
+        "hsg_2_ZINC00000345_5_ligand_8.pdbqt",
+        "hsg_2_ZINC00000345_5_ligand_9.pdbqt"
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "parameters.txt"
+    },
+    {
+      "name": "hsg_1.pdbqt"
+    },
+    {
+      "name": "hsg_2.pdbqt"
+    },
+    {
+      "name": "ZINC00000179_1.pdbqt"
+    },
+    {
+      "name": "ZINC00000179_2.pdbqt"
+    },
+    {
+      "name": "ZINC00000179_3.pdbqt"
+    },
+    {
+      "name": "ZINC00000179_4.pdbqt"
+    },
+    {
+      "name": "ZINC00000179_5.pdbqt"
+    },
+    {
+      "name": "ZINC00000345_1.pdbqt"
+    },
+    {
+      "name": "ZINC00000345_2.pdbqt"
+    },
+    {
+      "name": "ZINC00000345_3.pdbqt"
+    },
+    {
+      "name": "ZINC00000345_4.pdbqt"
+    },
+    {
+      "name": "ZINC00000345_5.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000179_1"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_1_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000179_2"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_2_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000179_3"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_3_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000179_4"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_4_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000179_5"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000179_5_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000345_1"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_1_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000345_2"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_2_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000345_3"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_3_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000345_4"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_4_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_1_ZINC00000345_5"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_1_ZINC00000345_5_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000179_1"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_1_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000179_2"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_2_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000179_3"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_3_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000179_4"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_4_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000179_5"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000179_5_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000345_1"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_1_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000345_2"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_2_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000345_3"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_3_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000345_4"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_4_ligand_9.pdbqt"
+    },
+    {
+      "name": "config_hsg_2_ZINC00000345_5"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5_ligand_1.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5_ligand_2.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5_ligand_3.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5_ligand_4.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5_ligand_5.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5_ligand_6.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5_ligand_7.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5_ligand_8.pdbqt"
+    },
+    {
+      "name": "hsg_2_ZINC00000345_5_ligand_9.pdbqt"
+    },
+    {
+      "name": "parameters2.txt"
+    },
+    {
+      "name": "parameters3.txt"
+    }
+  ],
+  "ins": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    233,
+    234
+  ],
+  "outs": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    125,
+    126,
+    127,
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    147,
+    148,
+    149,
+    150,
+    151,
+    152,
+    153,
+    154,
+    155,
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    164,
+    165,
+    166,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210,
+    213,
+    214,
+    215,
+    216,
+    217,
+    218,
+    219,
+    220,
+    221,
+    224,
+    225,
+    226,
+    227,
+    228,
+    229,
+    230,
+    231,
+    232
+  ]
+}

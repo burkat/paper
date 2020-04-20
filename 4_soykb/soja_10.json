@@ -1,0 +1,8686 @@
+{
+  "functions": [
+    {
+      "name": "awsFargateCommand",
+      "module": "functions"
+    }
+  ],
+  "ins": [
+    0,
+    1,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    63,
+    64,
+    115,
+    116,
+    167,
+    169,
+    219,
+    220,
+    273
+  ],
+  "outs": [
+    271,
+    272,
+    314,
+    317,
+    318,
+    320,
+    321
+  ],
+  "processes": [
+    {
+      "name": "software-wrapper",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "software-wrapper",
+          "args": []
+        }
+      },
+      "ins": [
+        0
+      ],
+      "outs": []
+    },
+    {
+      "name": "alignment_to_reference",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "bwa-wrapper",
+          "args": [
+            "mem",
+            "-t",
+            "2",
+            "-M",
+            "Gmax_275_v2.0.fa",
+            "USB-001_1.fastq",
+            "USB-001_2.fastq"
+          ],
+          "stdout": "20190802-094349-USB-001_aligned_reads.sam"
+        }
+      },
+      "ins": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "outs": [
+        2
+      ]
+    },
+    {
+      "name": "sort_sam",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "SortSam.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-001_aligned_reads.sam",
+            "O=20190802-094349-USB-001_sorted_reads.bam",
+            "SO=coordinate",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        2
+      ],
+      "outs": [
+        14,
+        15
+      ]
+    },
+    {
+      "name": "dedup",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "MarkDuplicates.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-001_sorted_reads.bam",
+            "O=20190802-094349-USB-001_deduped_reads.bam",
+            "METRICS_FILE=20190802-094349-USB-001_deduped.metrics",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        14,
+        15
+      ],
+      "outs": [
+        16,
+        17
+      ]
+    },
+    {
+      "name": "add_replace",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "AddOrReplaceReadGroups.jar",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-001_deduped_reads.bam",
+            "O=20190802-094349-USB-001_addrepl.bam",
+            "RGID=USB-001",
+            "LB=USB-001",
+            "PL=Illumina",
+            "SM=USB-001",
+            "CN=BGI",
+            "RGPU=USB-001",
+            "VALIDATION_STRINGENCY=LENIENT",
+            "SORT_ORDER=coordinate",
+            "CREATE_INDEX=TRUE"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        16,
+        17
+      ],
+      "outs": [
+        18,
+        19
+      ]
+    },
+    {
+      "name": "realign_target_creator",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "RealignerTargetCreator",
+            "-nt",
+            "2",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_addrepl.bam",
+            "-o",
+            "20190802-094349-USB-001_intervals.list"
+          ]
+        }
+      },
+      "ins": [
+        18,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        19
+      ],
+      "outs": [
+        20
+      ]
+    },
+    {
+      "name": "indel_realign",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "IndelRealigner",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_addrepl.bam",
+            "-targetIntervals",
+            "20190802-094349-USB-001_intervals.list",
+            "-o",
+            "20190802-094349-USB-001_indel_realigned.bam"
+          ]
+        }
+      },
+      "ins": [
+        18,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        20,
+        11,
+        12,
+        19
+      ],
+      "outs": [
+        21,
+        22
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr01",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr01.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        23,
+        24
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr02",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr02.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        25,
+        26
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr03",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr03.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        27,
+        28
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr04",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr04.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        29,
+        30
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr05",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr05.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        31,
+        32
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr06",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr06.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        33,
+        34
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr07",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr07.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        35,
+        36
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr08",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr08.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        37,
+        38
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr09",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr09.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        39,
+        40
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr10",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr10.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        41,
+        42
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr11",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr11.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        43,
+        44
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr12",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr12.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        45,
+        46
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr13",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr13.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        47,
+        48
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr14",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr14.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        49,
+        50
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr15",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr15.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        51,
+        52
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr16",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr16.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        53,
+        54
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr17",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr17.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        55,
+        56
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr18",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr18.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        57,
+        58
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr19",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr19.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        59,
+        60
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr20",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-001_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-001_Chr20.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        21,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        22,
+        12
+      ],
+      "outs": [
+        61,
+        62
+      ]
+    },
+    {
+      "name": "alignment_to_reference",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "bwa-wrapper",
+          "args": [
+            "mem",
+            "-t",
+            "2",
+            "-M",
+            "Gmax_275_v2.0.fa",
+            "USB-002_1.fastq",
+            "USB-002_2.fastq"
+          ],
+          "stdout": "20190802-094349-USB-002_aligned_reads.sam"
+        }
+      },
+      "ins": [
+        63,
+        64,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "outs": [
+        65
+      ]
+    },
+    {
+      "name": "sort_sam",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "SortSam.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-002_aligned_reads.sam",
+            "O=20190802-094349-USB-002_sorted_reads.bam",
+            "SO=coordinate",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        65
+      ],
+      "outs": [
+        66,
+        67
+      ]
+    },
+    {
+      "name": "dedup",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "MarkDuplicates.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-002_sorted_reads.bam",
+            "O=20190802-094349-USB-002_deduped_reads.bam",
+            "METRICS_FILE=20190802-094349-USB-002_deduped.metrics",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        66,
+        67
+      ],
+      "outs": [
+        68,
+        69
+      ]
+    },
+    {
+      "name": "add_replace",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "AddOrReplaceReadGroups.jar",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-002_deduped_reads.bam",
+            "O=20190802-094349-USB-002_addrepl.bam",
+            "RGID=USB-002",
+            "LB=USB-002",
+            "PL=Illumina",
+            "SM=USB-002",
+            "CN=BGI",
+            "RGPU=USB-002",
+            "VALIDATION_STRINGENCY=LENIENT",
+            "SORT_ORDER=coordinate",
+            "CREATE_INDEX=TRUE"
+          ]
+        }
+      },
+      "ins": [
+        68,
+        7,
+        69
+      ],
+      "outs": [
+        70,
+        71
+      ]
+    },
+    {
+      "name": "realign_target_creator",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "RealignerTargetCreator",
+            "-nt",
+            "2",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_addrepl.bam",
+            "-o",
+            "20190802-094349-USB-002_intervals.list"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        4,
+        70,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        71,
+        12
+      ],
+      "outs": [
+        72
+      ]
+    },
+    {
+      "name": "indel_realign",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "IndelRealigner",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_addrepl.bam",
+            "-targetIntervals",
+            "20190802-094349-USB-002_intervals.list",
+            "-o",
+            "20190802-094349-USB-002_indel_realigned.bam"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        4,
+        70,
+        72,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        71,
+        12
+      ],
+      "outs": [
+        73,
+        74
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr01",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr01.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        75,
+        76
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr02",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr02.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        77,
+        78
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr03",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr03.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        79,
+        80
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr04",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr04.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        81,
+        82
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr05",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr05.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        83,
+        84
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr06",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr06.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        85,
+        86
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr07",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr07.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        87,
+        88
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr08",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr08.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        89,
+        90
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr09",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr09.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        91,
+        92
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr10",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr10.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        93,
+        94
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr11",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr11.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        95,
+        96
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr12",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr12.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        97,
+        98
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr13",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr13.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        99,
+        100
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr14",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr14.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        101,
+        102
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr15",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr15.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        103,
+        104
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr16",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr16.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        105,
+        106
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr17",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr17.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        107,
+        108
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr18",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr18.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        109,
+        110
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr19",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr19.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        111,
+        112
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr20",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-002_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-002_Chr20.vcf"
+          ]
+        }
+      },
+      "ins": [
+        73,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        74
+      ],
+      "outs": [
+        113,
+        114
+      ]
+    },
+    {
+      "name": "alignment_to_reference",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "bwa-wrapper",
+          "args": [
+            "mem",
+            "-t",
+            "2",
+            "-M",
+            "Gmax_275_v2.0.fa",
+            "USB-003_1.fastq",
+            "USB-003_2.fastq"
+          ],
+          "stdout": "20190802-094349-USB-003_aligned_reads.sam"
+        }
+      },
+      "ins": [
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        115,
+        9,
+        10,
+        116,
+        11,
+        12
+      ],
+      "outs": [
+        117
+      ]
+    },
+    {
+      "name": "sort_sam",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "SortSam.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-003_aligned_reads.sam",
+            "O=20190802-094349-USB-003_sorted_reads.bam",
+            "SO=coordinate",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        117
+      ],
+      "outs": [
+        118,
+        119
+      ]
+    },
+    {
+      "name": "dedup",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "MarkDuplicates.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-003_sorted_reads.bam",
+            "O=20190802-094349-USB-003_deduped_reads.bam",
+            "METRICS_FILE=20190802-094349-USB-003_deduped.metrics",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        118,
+        7,
+        119
+      ],
+      "outs": [
+        120,
+        121
+      ]
+    },
+    {
+      "name": "add_replace",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "AddOrReplaceReadGroups.jar",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-003_deduped_reads.bam",
+            "O=20190802-094349-USB-003_addrepl.bam",
+            "RGID=USB-003",
+            "LB=USB-003",
+            "PL=Illumina",
+            "SM=USB-003",
+            "CN=BGI",
+            "RGPU=USB-003",
+            "VALIDATION_STRINGENCY=LENIENT",
+            "SORT_ORDER=coordinate",
+            "CREATE_INDEX=TRUE"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        120,
+        121
+      ],
+      "outs": [
+        122,
+        123
+      ]
+    },
+    {
+      "name": "realign_target_creator",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "RealignerTargetCreator",
+            "-nt",
+            "2",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_addrepl.bam",
+            "-o",
+            "20190802-094349-USB-003_intervals.list"
+          ]
+        }
+      },
+      "ins": [
+        122,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        123
+      ],
+      "outs": [
+        124
+      ]
+    },
+    {
+      "name": "indel_realign",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "IndelRealigner",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_addrepl.bam",
+            "-targetIntervals",
+            "20190802-094349-USB-003_intervals.list",
+            "-o",
+            "20190802-094349-USB-003_indel_realigned.bam"
+          ]
+        }
+      },
+      "ins": [
+        122,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        123,
+        124
+      ],
+      "outs": [
+        125,
+        126
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr01",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr01.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        127,
+        128
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr02",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr02.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        129,
+        130
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr03",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr03.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        131,
+        132
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr04",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr04.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        133,
+        134
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr05",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr05.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        135,
+        136
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr06",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr06.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        137,
+        138
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr07",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr07.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        139,
+        140
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr08",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr08.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        141,
+        142
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr09",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr09.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        143,
+        144
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr10",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr10.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        145,
+        146
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr11",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr11.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        147,
+        148
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr12",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr12.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        149,
+        150
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr13",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr13.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        151,
+        152
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr14",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr14.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        153,
+        154
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr15",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr15.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        155,
+        156
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr16",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr16.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        157,
+        158
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr17",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr17.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        159,
+        160
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr18",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr18.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        161,
+        162
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr19",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr19.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        163,
+        164
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr20",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-003_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-003_Chr20.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        125,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        126,
+        12
+      ],
+      "outs": [
+        165,
+        166
+      ]
+    },
+    {
+      "name": "alignment_to_reference",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "bwa-wrapper",
+          "args": [
+            "mem",
+            "-t",
+            "2",
+            "-M",
+            "Gmax_275_v2.0.fa",
+            "USB-004_1.fastq",
+            "USB-004_2.fastq"
+          ],
+          "stdout": "20190802-094349-USB-004_aligned_reads.sam"
+        }
+      },
+      "ins": [
+        1,
+        3,
+        167,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        169,
+        12
+      ],
+      "outs": [
+        168
+      ]
+    },
+    {
+      "name": "sort_sam",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "SortSam.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-004_aligned_reads.sam",
+            "O=20190802-094349-USB-004_sorted_reads.bam",
+            "SO=coordinate",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        168
+      ],
+      "outs": [
+        170,
+        171
+      ]
+    },
+    {
+      "name": "dedup",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "MarkDuplicates.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-004_sorted_reads.bam",
+            "O=20190802-094349-USB-004_deduped_reads.bam",
+            "METRICS_FILE=20190802-094349-USB-004_deduped.metrics",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        170,
+        171
+      ],
+      "outs": [
+        172,
+        173
+      ]
+    },
+    {
+      "name": "add_replace",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "AddOrReplaceReadGroups.jar",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-004_deduped_reads.bam",
+            "O=20190802-094349-USB-004_addrepl.bam",
+            "RGID=USB-004",
+            "LB=USB-004",
+            "PL=Illumina",
+            "SM=USB-004",
+            "CN=BGI",
+            "RGPU=USB-004",
+            "VALIDATION_STRINGENCY=LENIENT",
+            "SORT_ORDER=coordinate",
+            "CREATE_INDEX=TRUE"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        172,
+        173
+      ],
+      "outs": [
+        174,
+        175
+      ]
+    },
+    {
+      "name": "realign_target_creator",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "RealignerTargetCreator",
+            "-nt",
+            "2",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_addrepl.bam",
+            "-o",
+            "20190802-094349-USB-004_intervals.list"
+          ]
+        }
+      },
+      "ins": [
+        174,
+        1,
+        3,
+        175,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "outs": [
+        176
+      ]
+    },
+    {
+      "name": "indel_realign",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "IndelRealigner",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_addrepl.bam",
+            "-targetIntervals",
+            "20190802-094349-USB-004_intervals.list",
+            "-o",
+            "20190802-094349-USB-004_indel_realigned.bam"
+          ]
+        }
+      },
+      "ins": [
+        174,
+        1,
+        3,
+        175,
+        4,
+        6,
+        7,
+        8,
+        176,
+        9,
+        10,
+        11,
+        12
+      ],
+      "outs": [
+        177,
+        178
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr01",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr01.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        179,
+        180
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr02",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr02.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        181,
+        182
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr03",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr03.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        183,
+        184
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr04",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr04.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        185,
+        186
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr05",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr05.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        187,
+        188
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr06",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr06.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        189,
+        190
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr07",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr07.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        191,
+        192
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr08",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr08.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        193,
+        194
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr09",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr09.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        195,
+        196
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr10",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr10.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        197,
+        198
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr11",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr11.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        199,
+        200
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr12",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr12.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        201,
+        202
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr13",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr13.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        203,
+        204
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr14",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr14.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        205,
+        206
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr15",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr15.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        207,
+        208
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr16",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr16.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        209,
+        210
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr17",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr17.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        211,
+        212
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr18",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr18.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        213,
+        214
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr19",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr19.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        215,
+        216
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr20",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-004_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-004_Chr20.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        177,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        178
+      ],
+      "outs": [
+        217,
+        218
+      ]
+    },
+    {
+      "name": "alignment_to_reference",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "bwa-wrapper",
+          "args": [
+            "mem",
+            "-t",
+            "2",
+            "-M",
+            "Gmax_275_v2.0.fa",
+            "USB-005_1.fastq",
+            "USB-005_2.fastq"
+          ],
+          "stdout": "20190802-094349-USB-005_aligned_reads.sam"
+        }
+      },
+      "ins": [
+        219,
+        220,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "outs": [
+        221
+      ]
+    },
+    {
+      "name": "sort_sam",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "SortSam.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-005_aligned_reads.sam",
+            "O=20190802-094349-USB-005_sorted_reads.bam",
+            "SO=coordinate",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        221
+      ],
+      "outs": [
+        222,
+        223
+      ]
+    },
+    {
+      "name": "dedup",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "MarkDuplicates.jar",
+            "CREATE_INDEX=TRUE",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-005_sorted_reads.bam",
+            "O=20190802-094349-USB-005_deduped_reads.bam",
+            "METRICS_FILE=20190802-094349-USB-005_deduped.metrics",
+            "VALIDATION_STRINGENCY=LENIENT"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        222,
+        223
+      ],
+      "outs": [
+        224,
+        225
+      ]
+    },
+    {
+      "name": "add_replace",
+      "function": "awsLambdaCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "picard-wrapper",
+          "args": [
+            "AddOrReplaceReadGroups.jar",
+            "MAX_RECORDS_IN_RAM=5000000",
+            "TMP_DIR=.",
+            "I=20190802-094349-USB-005_deduped_reads.bam",
+            "O=20190802-094349-USB-005_addrepl.bam",
+            "RGID=USB-005",
+            "LB=USB-005",
+            "PL=Illumina",
+            "SM=USB-005",
+            "CN=BGI",
+            "RGPU=USB-005",
+            "VALIDATION_STRINGENCY=LENIENT",
+            "SORT_ORDER=coordinate",
+            "CREATE_INDEX=TRUE"
+          ]
+        }
+      },
+      "ins": [
+        7,
+        224,
+        225
+      ],
+      "outs": [
+        226,
+        227
+      ]
+    },
+    {
+      "name": "realign_target_creator",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "RealignerTargetCreator",
+            "-nt",
+            "2",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_addrepl.bam",
+            "-o",
+            "20190802-094349-USB-005_intervals.list"
+          ]
+        }
+      },
+      "ins": [
+        226,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        227
+      ],
+      "outs": [
+        228
+      ]
+    },
+    {
+      "name": "indel_realign",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "IndelRealigner",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_addrepl.bam",
+            "-targetIntervals",
+            "20190802-094349-USB-005_intervals.list",
+            "-o",
+            "20190802-094349-USB-005_indel_realigned.bam"
+          ]
+        }
+      },
+      "ins": [
+        226,
+        228,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        227
+      ],
+      "outs": [
+        229,
+        230
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr01",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr01.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        231,
+        232
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr02",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr02.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        233,
+        234
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr03",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr03.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        235,
+        236
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr04",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr04.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        237,
+        238
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr05",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr05.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        239,
+        240
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr06",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr06.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        241,
+        242
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr07",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr07.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        243,
+        244
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr08",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr08.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        245,
+        246
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr09",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr09.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        247,
+        248
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr10",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr10.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        249,
+        250
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr11",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr11.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        251,
+        252
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr12",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr12.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        253,
+        254
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr13",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr13.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        255,
+        256
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr14",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr14.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        257,
+        258
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr15",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr15.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        259,
+        260
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr16",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr16.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        261,
+        262
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr17",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr17.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        263,
+        264
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr18",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr18.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        265,
+        266
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr19",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr19.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        267,
+        268
+      ]
+    },
+    {
+      "name": "haplotype_caller",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "HaplotypeCaller",
+            "--emitRefConfidence",
+            "GVCF",
+            "--variant_index_type",
+            "LINEAR",
+            "--variant_index_parameter",
+            "128000",
+            "-L",
+            "Chr20",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-I",
+            "20190802-094349-USB-005_indel_realigned.bam",
+            "-o",
+            "20190802-094349-USB-005_Chr20.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        229,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        230,
+        12
+      ],
+      "outs": [
+        269,
+        270
+      ]
+    },
+    {
+      "name": "merge_gcvf",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "CombineGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-mergeGVCF.vcf",
+            "--variant",
+            "haplotype-files.list"
+          ]
+        }
+      },
+      "ins": [
+        235,
+        112,
+        37,
+        109,
+        55,
+        62,
+        207,
+        25,
+        246,
+        208,
+        33,
+        231,
+        54,
+        143,
+        200,
+        36,
+        92,
+        260,
+        217,
+        184,
+        137,
+        45,
+        42,
+        212,
+        159,
+        259,
+        96,
+        97,
+        89,
+        187,
+        4,
+        256,
+        108,
+        149,
+        51,
+        47,
+        32,
+        199,
+        95,
+        79,
+        90,
+        247,
+        211,
+        135,
+        91,
+        7,
+        264,
+        146,
+        180,
+        155,
+        133,
+        214,
+        250,
+        210,
+        111,
+        49,
+        144,
+        139,
+        204,
+        243,
+        145,
+        110,
+        114,
+        105,
+        81,
+        58,
+        251,
+        198,
+        164,
+        153,
+        93,
+        236,
+        213,
+        257,
+        215,
+        269,
+        83,
+        39,
+        148,
+        244,
+        254,
+        253,
+        190,
+        266,
+        161,
+        60,
+        103,
+        38,
+        44,
+        151,
+        162,
+        59,
+        152,
+        157,
+        186,
+        192,
+        237,
+        134,
+        181,
+        156,
+        23,
+        104,
+        43,
+        28,
+        41,
+        165,
+        98,
+        232,
+        154,
+        147,
+        218,
+        160,
+        185,
+        127,
+        131,
+        129,
+        31,
+        205,
+        201,
+        56,
+        193,
+        113,
+        234,
+        86,
+        140,
+        48,
+        52,
+        99,
+        1,
+        240,
+        188,
+        166,
+        233,
+        238,
+        194,
+        27,
+        76,
+        102,
+        142,
+        203,
+        10,
+        255,
+        53,
+        183,
+        29,
+        267,
+        82,
+        179,
+        34,
+        50,
+        202,
+        206,
+        163,
+        11,
+        101,
+        241,
+        258,
+        132,
+        252,
+        195,
+        3,
+        249,
+        270,
+        100,
+        239,
+        248,
+        85,
+        130,
+        150,
+        107,
+        209,
+        182,
+        12,
+        61,
+        189,
+        77,
+        128,
+        40,
+        94,
+        46,
+        8,
+        26,
+        87,
+        136,
+        9,
+        35,
+        158,
+        261,
+        57,
+        30,
+        191,
+        84,
+        196,
+        106,
+        262,
+        263,
+        265,
+        197,
+        138,
+        273,
+        242,
+        80,
+        216,
+        6,
+        24,
+        245,
+        141,
+        268,
+        78,
+        88,
+        75
+      ],
+      "outs": [
+        271,
+        272
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr01.vcf",
+            "-L",
+            "Chr01",
+            "--variant",
+            "20190802-094349-USB-001_Chr01.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr01.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr01.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr01.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr01.vcf"
+          ]
+        }
+      },
+      "ins": [
+        231,
+        127,
+        12,
+        6,
+        1,
+        128,
+        8,
+        10,
+        76,
+        180,
+        4,
+        3,
+        179,
+        23,
+        7,
+        24,
+        9,
+        11,
+        75,
+        232
+      ],
+      "outs": [
+        274,
+        275
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr02.vcf",
+            "-L",
+            "Chr02",
+            "--variant",
+            "20190802-094349-USB-001_Chr02.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr02.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr02.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr02.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr02.vcf"
+          ]
+        }
+      },
+      "ins": [
+        129,
+        130,
+        25,
+        182,
+        12,
+        1,
+        77,
+        233,
+        8,
+        26,
+        10,
+        234,
+        4,
+        181,
+        3,
+        6,
+        7,
+        9,
+        11,
+        78
+      ],
+      "outs": [
+        276,
+        277
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr03.vcf",
+            "-L",
+            "Chr03",
+            "--variant",
+            "20190802-094349-USB-001_Chr03.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr03.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr03.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr03.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr03.vcf"
+          ]
+        }
+      },
+      "ins": [
+        235,
+        131,
+        12,
+        1,
+        236,
+        184,
+        8,
+        27,
+        28,
+        10,
+        183,
+        4,
+        3,
+        79,
+        80,
+        6,
+        7,
+        9,
+        11,
+        132
+      ],
+      "outs": [
+        278,
+        279
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr04.vcf",
+            "-L",
+            "Chr04",
+            "--variant",
+            "20190802-094349-USB-001_Chr04.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr04.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr04.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr04.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr04.vcf"
+          ]
+        }
+      },
+      "ins": [
+        185,
+        81,
+        12,
+        1,
+        238,
+        8,
+        10,
+        29,
+        4,
+        30,
+        3,
+        82,
+        186,
+        237,
+        134,
+        6,
+        7,
+        9,
+        11,
+        133
+      ],
+      "outs": [
+        280,
+        281
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr05.vcf",
+            "-L",
+            "Chr05",
+            "--variant",
+            "20190802-094349-USB-001_Chr05.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr05.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr05.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr05.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr05.vcf"
+          ]
+        }
+      },
+      "ins": [
+        31,
+        239,
+        240,
+        12,
+        1,
+        188,
+        8,
+        83,
+        10,
+        136,
+        187,
+        4,
+        3,
+        84,
+        32,
+        135,
+        6,
+        7,
+        9,
+        11
+      ],
+      "outs": [
+        282,
+        283
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr06.vcf",
+            "-L",
+            "Chr06",
+            "--variant",
+            "20190802-094349-USB-001_Chr06.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr06.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr06.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr06.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr06.vcf"
+          ]
+        }
+      },
+      "ins": [
+        85,
+        86,
+        33,
+        12,
+        1,
+        189,
+        137,
+        8,
+        10,
+        190,
+        4,
+        3,
+        34,
+        138,
+        242,
+        6,
+        7,
+        9,
+        11,
+        241
+      ],
+      "outs": [
+        284,
+        285
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr07.vcf",
+            "-L",
+            "Chr07",
+            "--variant",
+            "20190802-094349-USB-001_Chr07.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr07.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr07.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr07.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr07.vcf"
+          ]
+        }
+      },
+      "ins": [
+        139,
+        140,
+        12,
+        191,
+        1,
+        36,
+        8,
+        10,
+        87,
+        244,
+        35,
+        4,
+        3,
+        192,
+        243,
+        6,
+        7,
+        9,
+        11,
+        88
+      ],
+      "outs": [
+        286,
+        287
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr08.vcf",
+            "-L",
+            "Chr08",
+            "--variant",
+            "20190802-094349-USB-001_Chr08.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr08.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr08.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr08.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr08.vcf"
+          ]
+        }
+      },
+      "ins": [
+        37,
+        193,
+        12,
+        1,
+        245,
+        246,
+        8,
+        194,
+        10,
+        142,
+        89,
+        4,
+        11,
+        38,
+        3,
+        90,
+        6,
+        7,
+        9,
+        141
+      ],
+      "outs": [
+        288,
+        289
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr09.vcf",
+            "-L",
+            "Chr09",
+            "--variant",
+            "20190802-094349-USB-001_Chr09.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr09.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr09.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr09.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr09.vcf"
+          ]
+        }
+      },
+      "ins": [
+        195,
+        92,
+        144,
+        12,
+        6,
+        143,
+        1,
+        40,
+        8,
+        10,
+        39,
+        248,
+        4,
+        3,
+        196,
+        247,
+        91,
+        7,
+        9,
+        11
+      ],
+      "outs": [
+        290,
+        291
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr10.vcf",
+            "-L",
+            "Chr10",
+            "--variant",
+            "20190802-094349-USB-001_Chr10.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr10.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr10.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr10.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr10.vcf"
+          ]
+        }
+      },
+      "ins": [
+        145,
+        146,
+        12,
+        1,
+        93,
+        94,
+        8,
+        42,
+        10,
+        249,
+        4,
+        3,
+        198,
+        197,
+        250,
+        6,
+        7,
+        9,
+        41,
+        11
+      ],
+      "outs": [
+        292,
+        293
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr11.vcf",
+            "-L",
+            "Chr11",
+            "--variant",
+            "20190802-094349-USB-001_Chr11.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr11.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr11.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr11.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr11.vcf"
+          ]
+        }
+      },
+      "ins": [
+        200,
+        252,
+        12,
+        6,
+        1,
+        8,
+        10,
+        148,
+        96,
+        4,
+        3,
+        199,
+        95,
+        251,
+        7,
+        44,
+        43,
+        9,
+        11,
+        147
+      ],
+      "outs": [
+        294,
+        295
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr12.vcf",
+            "-L",
+            "Chr12",
+            "--variant",
+            "20190802-094349-USB-001_Chr12.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr12.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr12.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr12.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr12.vcf"
+          ]
+        }
+      },
+      "ins": [
+        201,
+        150,
+        12,
+        1,
+        46,
+        45,
+        10,
+        254,
+        253,
+        4,
+        98,
+        3,
+        149,
+        202,
+        6,
+        7,
+        9,
+        11,
+        97,
+        8
+      ],
+      "outs": [
+        296,
+        297
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr13.vcf",
+            "-L",
+            "Chr13",
+            "--variant",
+            "20190802-094349-USB-001_Chr13.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr13.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr13.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr13.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr13.vcf"
+          ]
+        }
+      },
+      "ins": [
+        100,
+        12,
+        48,
+        99,
+        204,
+        1,
+        8,
+        10,
+        203,
+        255,
+        4,
+        256,
+        3,
+        151,
+        47,
+        152,
+        6,
+        7,
+        9,
+        11
+      ],
+      "outs": [
+        298,
+        299
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr14.vcf",
+            "-L",
+            "Chr14",
+            "--variant",
+            "20190802-094349-USB-001_Chr14.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr14.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr14.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr14.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr14.vcf"
+          ]
+        }
+      },
+      "ins": [
+        49,
+        205,
+        12,
+        1,
+        153,
+        257,
+        8,
+        10,
+        102,
+        4,
+        3,
+        50,
+        206,
+        6,
+        7,
+        9,
+        11,
+        101,
+        154,
+        258
+      ],
+      "outs": [
+        300,
+        301
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr15.vcf",
+            "-L",
+            "Chr15",
+            "--variant",
+            "20190802-094349-USB-001_Chr15.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr15.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr15.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr15.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr15.vcf"
+          ]
+        }
+      },
+      "ins": [
+        207,
+        12,
+        52,
+        1,
+        260,
+        8,
+        10,
+        259,
+        4,
+        103,
+        3,
+        51,
+        208,
+        155,
+        156,
+        6,
+        7,
+        104,
+        9,
+        11
+      ],
+      "outs": [
+        302,
+        303
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr16.vcf",
+            "-L",
+            "Chr16",
+            "--variant",
+            "20190802-094349-USB-001_Chr16.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr16.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr16.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr16.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr16.vcf"
+          ]
+        }
+      },
+      "ins": [
+        105,
+        209,
+        12,
+        54,
+        1,
+        8,
+        10,
+        4,
+        53,
+        158,
+        261,
+        3,
+        262,
+        157,
+        6,
+        7,
+        106,
+        9,
+        11,
+        210
+      ],
+      "outs": [
+        304,
+        305
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr17.vcf",
+            "-L",
+            "Chr17",
+            "--variant",
+            "20190802-094349-USB-001_Chr17.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr17.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr17.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr17.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr17.vcf"
+          ]
+        }
+      },
+      "ins": [
+        55,
+        56,
+        107,
+        12,
+        1,
+        263,
+        8,
+        10,
+        212,
+        159,
+        4,
+        3,
+        108,
+        211,
+        6,
+        7,
+        264,
+        9,
+        11,
+        160
+      ],
+      "outs": [
+        306,
+        307
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr18.vcf",
+            "-L",
+            "Chr18",
+            "--variant",
+            "20190802-094349-USB-001_Chr18.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr18.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr18.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr18.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr18.vcf"
+          ]
+        }
+      },
+      "ins": [
+        109,
+        110,
+        12,
+        58,
+        1,
+        213,
+        10,
+        4,
+        266,
+        161,
+        57,
+        3,
+        162,
+        265,
+        6,
+        7,
+        9,
+        11,
+        214,
+        8
+      ],
+      "outs": [
+        308,
+        309
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr19.vcf",
+            "-L",
+            "Chr19",
+            "--variant",
+            "20190802-094349-USB-001_Chr19.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr19.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr19.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr19.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr19.vcf"
+          ]
+        }
+      },
+      "ins": [
+        112,
+        12,
+        1,
+        164,
+        215,
+        8,
+        267,
+        10,
+        4,
+        60,
+        3,
+        59,
+        6,
+        7,
+        163,
+        9,
+        11,
+        111,
+        216,
+        268
+      ],
+      "outs": [
+        310,
+        311
+      ]
+    },
+    {
+      "name": "genotype_gvcfs",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "GenotypeGVCFs",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-GVCF_Chr20.vcf",
+            "-L",
+            "Chr20",
+            "--variant",
+            "20190802-094349-USB-001_Chr20.vcf",
+            "--variant",
+            "20190802-094349-USB-002_Chr20.vcf",
+            "--variant",
+            "20190802-094349-USB-003_Chr20.vcf",
+            "--variant",
+            "20190802-094349-USB-004_Chr20.vcf",
+            "--variant",
+            "20190802-094349-USB-005_Chr20.vcf"
+          ]
+        }
+      },
+      "ins": [
+        270,
+        62,
+        113,
+        114,
+        61,
+        12,
+        1,
+        165,
+        217,
+        166,
+        8,
+        10,
+        4,
+        3,
+        269,
+        6,
+        7,
+        9,
+        11,
+        218
+      ],
+      "outs": [
+        312,
+        313
+      ]
+    },
+    {
+      "name": "combine_variants",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "CombineVariants",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-o",
+            "20190802-094349-All.vcf",
+            "-genotypeMergeOptions",
+            "UNIQUIFY",
+            "--variant",
+            "20190802-094349-GVCF_Chr01.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr02.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr03.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr04.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr05.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr06.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr07.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr08.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr09.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr10.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr11.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr12.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr13.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr14.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr15.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr16.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr17.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr18.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr19.vcf",
+            "--variant",
+            "20190802-094349-GVCF_Chr20.vcf"
+          ]
+        }
+      },
+      "ins": [
+        280,
+        274,
+        275,
+        296,
+        276,
+        288,
+        300,
+        282,
+        278,
+        308,
+        12,
+        297,
+        298,
+        313,
+        1,
+        284,
+        281,
+        286,
+        290,
+        291,
+        301,
+        285,
+        8,
+        294,
+        10,
+        309,
+        304,
+        305,
+        311,
+        310,
+        312,
+        4,
+        289,
+        277,
+        302,
+        3,
+        279,
+        299,
+        306,
+        307,
+        292,
+        303,
+        287,
+        283,
+        295,
+        6,
+        7,
+        9,
+        11,
+        293
+      ],
+      "outs": [
+        314,
+        315
+      ]
+    },
+    {
+      "name": "select_variants_snp",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "SelectVariants",
+            "-nt",
+            "2",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-selectType",
+            "SNP",
+            "-V",
+            "20190802-094349-All.vcf",
+            "-o",
+            "20190802-094349-All.vcf_snp_only.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        4,
+        315,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "outs": [
+        316
+      ]
+    },
+    {
+      "name": "filtering_snp",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "VariantFiltration",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-V",
+            "20190802-094349-All.vcf_snp_only.vcf",
+            "--filterExpression",
+            "QD < 2.0 || FS > 60.0 || MQ < 40.0 || Haplotypescore > 20.0",
+            "--filterName",
+            "my_snp_filter",
+            "-o",
+            "20190802-094349-All_filtered_snp.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        316,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "outs": [
+        317,
+        318
+      ]
+    },
+    {
+      "name": "select_variants_indel",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "SelectVariants",
+            "-nt",
+            "2",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-selectType",
+            "INDEL",
+            "-V",
+            "20190802-094349-All.vcf",
+            "-o",
+            "20190802-094349-All.vcf_indel_only.vcf"
+          ]
+        }
+      },
+      "ins": [
+        1,
+        3,
+        4,
+        315,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "outs": [
+        319
+      ]
+    },
+    {
+      "name": "filtering_indel",
+      "function": "awsFargateCommand",
+      "type": "dataflow",
+      "executor": "syscommand",
+      "firingLimit": 1,
+      "config": {
+        "executor": {
+          "executable": "gatk-wrapper",
+          "args": [
+            "-T",
+            "VariantFiltration",
+            "-R",
+            "Gmax_275_v2.0.fa",
+            "-V",
+            "20190802-094349-All.vcf_indel_only.vcf",
+            "--filterExpression",
+            "QD < 2.0 || FS > 200.0 || MQ < 40.0 || Haplotypescore > 20.0",
+            "--filterName",
+            "my_indel_filter",
+            "-o",
+            "20190802-094349-All_filtered_indel.vcf"
+          ]
+        }
+      },
+      "ins": [
+        319,
+        1,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "outs": [
+        320,
+        321
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "software.tar.gz",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "Gmax_275_v2.0.dict",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "20190802-094349-USB-001_aligned_reads.sam"
+    },
+    {
+      "name": "Gmax_275_v2.0.fa.pac",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "Gmax_275_v2.0.fa.fai",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "USB-001_2.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "Gmax_275_v2.0.fa.sa",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "software.tar.gz",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "Gmax_275_v2.0.fa.amb",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "Gmax_275_v2.0.fa",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "Gmax_275_v2.0.fa.ann",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "Gmax_275_v2.0.fa.bwt",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "chromosome.txt",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "USB-001_1.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "20190802-094349-USB-001_sorted_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-001_sorted_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-001_deduped_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-001_deduped_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-001_addrepl.bai"
+    },
+    {
+      "name": "20190802-094349-USB-001_addrepl.bam"
+    },
+    {
+      "name": "20190802-094349-USB-001_intervals.list"
+    },
+    {
+      "name": "20190802-094349-USB-001_indel_realigned.bam"
+    },
+    {
+      "name": "20190802-094349-USB-001_indel_realigned.bai"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr01.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr01.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr02.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr02.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr03.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr03.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr04.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr04.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr05.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr05.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr06.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr06.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr07.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr07.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr08.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr08.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr09.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr09.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr10.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr10.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr11.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr11.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr12.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr12.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr13.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr13.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr14.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr14.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr15.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr15.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr16.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr16.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr17.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr17.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr18.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr18.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr19.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr19.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr20.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-001_Chr20.vcf"
+    },
+    {
+      "name": "USB-002_2.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "USB-002_1.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "20190802-094349-USB-002_aligned_reads.sam"
+    },
+    {
+      "name": "20190802-094349-USB-002_sorted_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-002_sorted_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-002_deduped_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-002_deduped_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-002_addrepl.bam"
+    },
+    {
+      "name": "20190802-094349-USB-002_addrepl.bai"
+    },
+    {
+      "name": "20190802-094349-USB-002_intervals.list"
+    },
+    {
+      "name": "20190802-094349-USB-002_indel_realigned.bam"
+    },
+    {
+      "name": "20190802-094349-USB-002_indel_realigned.bai"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr01.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr01.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr02.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr02.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr03.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr03.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr04.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr04.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr05.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr05.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr06.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr06.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr07.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr07.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr08.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr08.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr09.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr09.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr10.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr10.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr11.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr11.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr12.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr12.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr13.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr13.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr14.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr14.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr15.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr15.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr16.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr16.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr17.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr17.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr18.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr18.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr19.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr19.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr20.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-002_Chr20.vcf"
+    },
+    {
+      "name": "USB-003_2.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "USB-003_1.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "20190802-094349-USB-003_aligned_reads.sam"
+    },
+    {
+      "name": "20190802-094349-USB-003_sorted_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-003_sorted_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-003_deduped_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-003_deduped_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-003_addrepl.bai"
+    },
+    {
+      "name": "20190802-094349-USB-003_addrepl.bam"
+    },
+    {
+      "name": "20190802-094349-USB-003_intervals.list"
+    },
+    {
+      "name": "20190802-094349-USB-003_indel_realigned.bam"
+    },
+    {
+      "name": "20190802-094349-USB-003_indel_realigned.bai"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr01.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr01.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr02.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr02.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr03.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr03.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr04.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr04.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr05.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr05.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr06.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr06.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr07.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr07.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr08.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr08.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr09.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr09.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr10.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr10.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr11.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr11.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr12.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr12.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr13.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr13.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr14.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr14.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr15.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr15.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr16.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr16.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr17.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr17.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr18.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr18.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr19.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr19.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr20.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-003_Chr20.vcf"
+    },
+    {
+      "name": "USB-004_2.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "20190802-094349-USB-004_aligned_reads.sam"
+    },
+    {
+      "name": "USB-004_1.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "20190802-094349-USB-004_sorted_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-004_sorted_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-004_deduped_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-004_deduped_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-004_addrepl.bam"
+    },
+    {
+      "name": "20190802-094349-USB-004_addrepl.bai"
+    },
+    {
+      "name": "20190802-094349-USB-004_intervals.list"
+    },
+    {
+      "name": "20190802-094349-USB-004_indel_realigned.bam"
+    },
+    {
+      "name": "20190802-094349-USB-004_indel_realigned.bai"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr01.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr01.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr02.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr02.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr03.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr03.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr04.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr04.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr05.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr05.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr06.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr06.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr07.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr07.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr08.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr08.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr09.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr09.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr10.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr10.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr11.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr11.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr12.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr12.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr13.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr13.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr14.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr14.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr15.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr15.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr16.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr16.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr17.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr17.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr18.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr18.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr19.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr19.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr20.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-004_Chr20.vcf.idx"
+    },
+    {
+      "name": "USB-005_1.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "USB-005_2.fastq",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "20190802-094349-USB-005_aligned_reads.sam"
+    },
+    {
+      "name": "20190802-094349-USB-005_sorted_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-005_sorted_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-005_deduped_reads.bai"
+    },
+    {
+      "name": "20190802-094349-USB-005_deduped_reads.bam"
+    },
+    {
+      "name": "20190802-094349-USB-005_addrepl.bam"
+    },
+    {
+      "name": "20190802-094349-USB-005_addrepl.bai"
+    },
+    {
+      "name": "20190802-094349-USB-005_intervals.list"
+    },
+    {
+      "name": "20190802-094349-USB-005_indel_realigned.bai"
+    },
+    {
+      "name": "20190802-094349-USB-005_indel_realigned.bam"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr01.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr01.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr02.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr02.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr03.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr03.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr04.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr04.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr05.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr05.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr06.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr06.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr07.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr07.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr08.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr08.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr09.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr09.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr10.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr10.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr11.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr11.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr12.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr12.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr13.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr13.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr14.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr14.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr15.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr15.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr16.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr16.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr17.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr17.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr18.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr18.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr19.vcf"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr19.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr20.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-USB-005_Chr20.vcf"
+    },
+    {
+      "name": "20190802-094349-mergeGVCF.vcf"
+    },
+    {
+      "name": "20190802-094349-mergeGVCF.vcf.idx"
+    },
+    {
+      "name": "haplotype-files.list",
+      "data": [
+        {}
+      ]
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr01.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr01.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr02.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr02.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr03.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr03.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr04.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr04.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr05.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr05.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr06.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr06.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr07.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr07.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr08.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr08.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr09.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr09.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr10.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr10.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr11.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr11.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr12.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr12.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr13.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr13.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr14.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr14.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr15.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr15.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr16.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr16.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr17.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr17.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr18.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr18.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr19.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr19.vcf"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr20.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-GVCF_Chr20.vcf"
+    },
+    {
+      "name": "20190802-094349-All.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-All.vcf"
+    },
+    {
+      "name": "20190802-094349-All.vcf_snp_only.vcf"
+    },
+    {
+      "name": "20190802-094349-All_filtered_snp.vcf"
+    },
+    {
+      "name": "20190802-094349-All_filtered_snp.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-All.vcf_indel_only.vcf"
+    },
+    {
+      "name": "20190802-094349-All_filtered_indel.vcf.idx"
+    },
+    {
+      "name": "20190802-094349-All_filtered_indel.vcf"
+    }
+  ]
+}

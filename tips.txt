@@ -1,0 +1,15 @@
+Komendy:
+
+ustawienie wrapperów: export PATH=$PATH:~/software/wrappers 
+aws s3 cp Gmax_275_v2.0.fa.sa s3://burkat
+sudo docker run -e AWS_ACCESS_KEY_ID=xxx -e AWS_SECRET_ACCESS_KEY=xxx/xxx -p 8080:8080  handler
+
+sudo docker rmi -f $(sudo docker images -q)
+
+node handler.js "{\"executable\":\"ellipsoids-openmp\",\"args\":[\"1.dat\",\"10.log\",\"10.xoutput\"],\"env\":{},\"inputs\":[{\"name\":\"1.dat\",\"_id\":4,\"source\":3,\"firingId\":1,\"sigIdx\":1}],\"outputs\":[{\"name\":\"10.log\"},{\"name\":\"10.xoutput\"}],\"options\":{\"storage\":\"aws\",\"bucket\":\"burkat\",\"prefix\":\"ellipsoids\"}}"
+
+cat fargate4.txt | grep "Metrics" | cut -d " " -f 3,6,9,12,15,18,21,24,27,30 | sed '1i task_name task_fire task_start task_end download_start download_end execution_start execution_end upload_start upload_end' > fargate4.csv
+
+Soja problems: filtering_indel - kropka do numerycznych wartosci, combine_variants - trzeba dodac do argumentow "-genotypeMergeOptions","UNIQUIFY", przed --variant
+
+{"executable":"kinc-wrapper","args":["Yeast-GEM2.tar.gz","Yeast-GEM.txt","1","50","5","7051"],"env":{},"inputs":[{"name":"kinc","_id":1,"data":[{}],"sigIdx":1},{"name":"Yeast-GEM2.tar.gz","_id":4,"data":[{}],"sigIdx":1}],"outputs":[{"name":"clusters-sc1.tar.gz"},{"name":"kinc.out.1"}],"options":{"bucket":"burkat","prefix":"kinc"},"logName":"log_47qclp2p.sz"}
